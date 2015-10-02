@@ -1,0 +1,68 @@
+@code{(require 'space-filling)}
+@ftindex space-filling
+
+The algorithms and cell properties are described in
+@url{http://people.csail.mit.edu/jaffer/Geometry/RMDSFF.pdf}
+
+
+@defun make-cell type rank side precession
+
+
+@defunx make-cell type rank side
+
+@defunx make-cell type rank
+
+@var{type} must be the symbol @code{diagonal}, @code{adjacent}, or
+@code{centered}.  @var{rank} must be an integer larger than 1.  @var{side}, if
+present, must be an even integer larger than 1 if @var{type} is
+@code{adjacent} or an odd integer larger than 2 otherwise; @var{side}
+defaults to the smallest value.  @var{precession}, if present, must be an integer
+between 0 and @var{side}^@var{rank}-1; it is relevant only when @var{type} is
+@code{diagonal} or @code{centered}.
+
+
+@end defun
+@defun make-cell Hamiltonian-path-vector precession
+
+@defunx make-cell Hamiltonian-path-vector
+
+@var{type} must be a vector of @var{side}^@var{rank} lists of @var{rank} of
+integers encoding the coordinate positions of a Hamiltonian path on
+the @var{rank}-dimensional grid of points starting and ending on
+corners of the grid.  The starting corner must be the origin
+(all-zero coordinates). If the side-length is even, then the ending
+corner must be non-zero in only one coordinate; otherwise, the
+ending corner must be the furthest diagonally opposite corner from
+the origin.
+
+@code{make-cell} returns a data object suitable for passing as the
+first argument to @code{integer->coordinates} or
+@code{coordinates->integer}.
+@end defun
+
+Hilbert, Peano, and centered Peano cells are generated
+respectively by:
+@example
+(make-cell 'adjacent @var{rank} 2)   ; Hilbert
+(make-cell 'diagonal @var{rank} 3)   ; Peano
+(make-cell 'centered @var{rank} 3)   ; centered Peano
+@end example
+
+In the conversion procedures, if the cell is @code{diagonal} or
+@code{adjacent}, then the coordinates and scalar must be nonnegative
+integers.  If @code{centered}, then the integers can be negative.
+
+
+@defun integer->coordinates cell u
+
+@code{integer->coordinates} converts the integer @var{u} to a list of coordinates according to @var{cell}.
+@end defun
+
+
+@defun coordinates->integer cell v
+
+@code{coordinates->integer} converts the list of coordinates @var{v} to an integer according to @var{cell}.
+@end defun
+
+@var{coordinates->integer} and @var{integer->coordinates} are
+inverse functions when passed the same @var{cell} argument.
